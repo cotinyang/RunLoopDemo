@@ -7,8 +7,12 @@
 //
 
 #import "ViewController.h"
+#import "AppDelegate.h"
+#import "CTYWoker.h"
 
-@interface ViewController ()
+@interface ViewController () {
+    CTYWoker *worker;
+}
 
 @end
 
@@ -16,6 +20,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    worker = [[CTYWoker alloc] init];
+    [worker start];
     // Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -23,6 +29,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)pingButtonAction:(id)sender {
+    AppDelegate *del = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [worker pingSource];
 }
 
 
