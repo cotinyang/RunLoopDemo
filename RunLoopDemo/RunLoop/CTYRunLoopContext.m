@@ -17,7 +17,6 @@
     if (self) {
         _runLoop =  loop;
         _source = src;
-        
     }
     return self;
 }

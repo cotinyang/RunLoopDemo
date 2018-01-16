@@ -12,6 +12,8 @@
 
 -(void)start;
 
+- (void)addDataForSource;
+
 - (void)pingSource;
 
 - (void)invalidateSource;

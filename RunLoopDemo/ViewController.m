@@ -30,6 +30,9 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (IBAction)addCommandButtonAction:(id)sender {
+    [worker addDataForSource];
+}
 
 - (IBAction)pingButtonAction:(id)sender {
     [worker pingSource];

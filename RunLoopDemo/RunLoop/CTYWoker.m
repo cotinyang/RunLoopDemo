@@ -30,6 +30,8 @@
     return self;
 }
 
+#pragma mark - Observer
+
 void CTYWokerRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
     NSString *activityStr = @"";
     switch (activity) {
@@ -72,6 +74,8 @@ void CTYWokerRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAct
     }
 }
 
+#pragma mark - thread
+
 - (void)start {
     [_worker start];
 }
@@ -106,6 +110,15 @@ void CTYWokerRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAct
     
     // Clean up code here. Be sure to release any allocated autorelease pools.
     NSLog(@"Exit worker thread");
+}
+
+#pragma mark - source processing
+
+- (void)addDataForSource {
+    if (self.sourcesToPing.count) {
+        CTYRunLoopContext* sourceCtx = self.sourcesToPing[0];
+        [sourceCtx.source addCommand:[[NSDate date] timeIntervalSince1970]];
+    }
 }
 
 - (void)pingSource{

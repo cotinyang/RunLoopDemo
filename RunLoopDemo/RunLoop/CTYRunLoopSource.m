@@ -67,12 +67,26 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
 
 // Handler method
 - (void)sourceFired {
-    NSLog(@"Source fired handler called");
+    @synchronized(self)
+    {
+        if(commands.count == 0) {
+            NSLog(@"no commands");
+            return;
+        }
+        for (NSNumber *command in commands) {
+            NSLog(@"processing command:%@",command);
+        }
+        [commands removeAllObjects];
+    }
 }
 
 // Client interface for registering commands to process
-- (void)addCommand:(NSInteger)command withData:(id)data {
+- (void)addCommand:(NSInteger)command{
     if(![self isValid]) return;
+    @synchronized(self)
+    {
+        [commands addObject:@(command)];
+    }
 }
 
 - (void)fireAllCommandsOnRunLoop:(CFRunLoopRef)runloop {

@@ -28,7 +28,7 @@
 - (void)sourceFired;
 
 // Client interface for registering commands to process
-- (void)addCommand:(NSInteger)command withData:(id)data;
+- (void)addCommand:(NSInteger)command;
 - (void)fireAllCommandsOnRunLoop:(CFRunLoopRef)runloop;
 
 @end
