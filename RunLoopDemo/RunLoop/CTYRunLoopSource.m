@@ -43,7 +43,7 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
 
 - (id)init {
     CFRunLoopSourceContext context = {0, (__bridge void *)(self), NULL, NULL, NULL, NULL, NULL,
-        &RunLoopSourceScheduleRoutine,
+        RunLoopSourceScheduleRoutine,
         RunLoopSourceCancelRoutine,
         RunLoopSourcePerformRoutine};
     
@@ -93,6 +93,7 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
     if(![self isValid]) return;
     CFRunLoopSourceSignal(runLoopSource);
     CFRunLoopWakeUp(runloop);
+    
 }
 
 - (BOOL)isValid {

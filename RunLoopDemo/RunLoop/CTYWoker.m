@@ -77,11 +77,18 @@ void CTYWokerRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAct
 #pragma mark - thread
 
 - (void)start {
-    [_worker start];
+    [self.worker start];
 }
 
 - (void) workerThread: (id) data
 {
+//    [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+//        NSLog(@"timer fired");
+//    }];
+//    do {
+//        [NSThread sleepForTimeInterval:2];
+//    }
+//    while (YES);
     NSLog(@"Enter worker thread");
     // add run loop observer
     [self addRunLoopObserver];
@@ -93,7 +100,9 @@ void CTYWokerRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAct
     CTYRunLoopSource* customRunLoopSource = [[CTYRunLoopSource alloc] init];
     customRunLoopSource.delegate = self;
     [customRunLoopSource addToCurrentRunLoop];
-    
+//    CFRunLoopRun();
+//    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+//    [runLoop run];
     do
     {
         // Start the run loop but return after each source is handled.
@@ -132,6 +141,17 @@ void CTYWokerRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAct
         CTYRunLoopContext* sourceCtx = self.sourcesToPing[0];
         [sourceCtx.source invalidate];
     }
+}
+
+- (void)stopRunLoop {
+    if (self.sourcesToPing.count) {
+        CTYRunLoopContext* sourceCtx = self.sourcesToPing[0];
+        CFRunLoopStop(sourceCtx.runLoop);
+    }
+}
+
+- (void)performLog {
+    NSLog(@"perform selector");
 }
 
 #pragma mark - CTYRunLoopSourceDelegate
