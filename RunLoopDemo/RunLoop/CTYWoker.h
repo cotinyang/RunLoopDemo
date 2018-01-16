@@ -14,6 +14,6 @@
 
 - (void)pingSource;
 
-- (void)stopSource;
+- (void)invalidateSource;
 
 @end

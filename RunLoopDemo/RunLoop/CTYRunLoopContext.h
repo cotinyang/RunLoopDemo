@@ -10,10 +10,7 @@
 
 @class CTYRunLoopSource;
 
-@interface CTYRunLoopContext : NSObject {
-    CFRunLoopRef runLoop;
-    CTYRunLoopSource* source;
-}
+@interface CTYRunLoopContext : NSObject
 
 @property (readonly) CFRunLoopRef runLoop;
 @property (readonly) CTYRunLoopSource *source;

@@ -32,8 +32,10 @@
 }
 
 - (IBAction)pingButtonAction:(id)sender {
-    AppDelegate *del = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [worker pingSource];
+}
+- (IBAction)stopButtonAction:(id)sender {
+    [worker invalidateSource];
 }
 
 

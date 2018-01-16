@@ -15,8 +15,7 @@
 @end
 
 @interface CTYRunLoopSource : NSObject {
-    CFRunLoopSourceRef runLoopSource;
-    NSMutableArray *commands;
+    
 }
 
 @property (nonatomic,weak) id<CTYRunLoopSourceDelegate> delegate;

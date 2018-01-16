@@ -30,6 +30,48 @@
     return self;
 }
 
+void CTYWokerRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
+    NSString *activityStr = @"";
+    switch (activity) {
+        case kCFRunLoopEntry:
+            activityStr = @"entry";
+            break;
+        case kCFRunLoopBeforeTimers:
+            activityStr = @"before timers";
+            break;
+        case kCFRunLoopBeforeSources:
+            activityStr = @"before sources";
+            break;
+        case kCFRunLoopBeforeWaiting:
+            activityStr = @"before waiting";
+            break;
+        case kCFRunLoopAfterWaiting:
+            activityStr = @"after waiting";
+            break;
+        case kCFRunLoopExit:
+            activityStr = @"exit";
+            break;
+        default:
+            break;
+    }
+//    NSLog(@"run loop activity:%@", activityStr);
+}
+
+
+- (void) addRunLoopObserver{
+    NSRunLoop *myRunLoop = [NSRunLoop currentRunLoop];
+    // Create a run loop observer and attach it to the run loop.
+    CFRunLoopObserverContext context = {0, (__bridge void *)(self), NULL, NULL, NULL};
+    CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault,
+                                                               kCFRunLoopAllActivities, YES, 0, &CTYWokerRunLoopObserverCallBack, &context);
+    
+    if (observer)
+    {
+        CFRunLoopRef cfLoop = [myRunLoop getCFRunLoop];
+        CFRunLoopAddObserver(cfLoop, observer, kCFRunLoopDefaultMode);
+    }
+}
+
 - (void)start {
     [_worker start];
 }
@@ -37,6 +79,9 @@
 - (void) workerThread: (id) data
 {
     NSLog(@"Enter worker thread");
+    // add run loop observer
+    [self addRunLoopObserver];
+    
     // Set up an autorelease pool here if not using garbage collection.
     BOOL done = NO;
     
@@ -49,12 +94,13 @@
     {
         // Start the run loop but return after each source is handled.
         SInt32 result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 5, YES);
-        
         // If a source explicitly stopped the run loop, or if there are no
-        // sources or timers, or our runloopSource is invalid ->
-        // go ahead and exit.
+        // sources or timers,go ahead and exit.
         if ((result == kCFRunLoopRunStopped) || result == kCFRunLoopRunFinished)
             done = YES;
+//        NSLog(@"before woker sleeping");
+//        [NSThread sleepForTimeInterval:20];
+//        NSLog(@"after woker sleeping");
     }
     while (!done);
     
@@ -68,7 +114,7 @@
         [sourceCtx.source fireAllCommandsOnRunLoop:sourceCtx.runLoop];
     }
 }
-- (void)stopSource{
+- (void)invalidateSource{
     if (self.sourcesToPing.count) {
         CTYRunLoopContext* sourceCtx = self.sourcesToPing[0];
         [sourceCtx.source invalidate];

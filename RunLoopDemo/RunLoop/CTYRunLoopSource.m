@@ -32,6 +32,13 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
 
 }
 
+@interface CTYRunLoopSource() {
+    CFRunLoopSourceRef runLoopSource;
+    NSMutableArray *commands;
+}
+
+@end
+
 @implementation CTYRunLoopSource
 
 - (id)init {
@@ -48,11 +55,14 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
 
 - (void)addToCurrentRunLoop {
     CFRunLoopRef runLoop = CFRunLoopGetCurrent();
+    //也可使用 NSRunLoop 来获取当前 run loop
+//    CFRunLoopRef runLoop = [NSRunLoop currentRunLoop].getCFRunLoop;
     CFRunLoopAddSource(runLoop, runLoopSource, kCFRunLoopDefaultMode);
 }
 
 - (void)invalidate {
-    
+    if(![self isValid]) return;
+    CFRunLoopSourceInvalidate(runLoopSource);
 }
 
 // Handler method
@@ -62,12 +72,19 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
 
 // Client interface for registering commands to process
 - (void)addCommand:(NSInteger)command withData:(id)data {
-    
+    if(![self isValid]) return;
 }
 
 - (void)fireAllCommandsOnRunLoop:(CFRunLoopRef)runloop {
+    if(![self isValid]) return;
     CFRunLoopSourceSignal(runLoopSource);
     CFRunLoopWakeUp(runloop);
+}
+
+- (BOOL)isValid {
+    BOOL isValid = CFRunLoopSourceIsValid(runLoopSource);
+    NSLog(@"Source valid:%@",isValid ? @"YES" : @"NO");
+    return isValid;
 }
 
 
